@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mystic Forest</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: black;
+  }
+
+  #forestCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+</style>
+</head>
+<body>
+<canvas id="forestCanvas"></canvas>
+<script>
+  const canvas = document.getElementById('forestCanvas');
+  const context = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = ['#2ECC71', '#3498DB', '#9B59B6', '#E74C3C', '#F1C40F'];
+  let particles = [];
+
+  class Particle {
+    constructor(x, y, radius, color) {
+      this.x = x;
+      this.y = y;
+      this.radius = radius;
+      this.color = color;
+      this.velocity = { x: (Math.random() - 0.5) * 2, y: (Math.random() - 0.5) * 2 };
+    }
+
+    draw() {
+      context.beginPath();
+      context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+      context.fillStyle = this.color;
+      context.fill();
+      context.closePath();
+    }
+
+    update() {
+      this.x += this.velocity.x;
+      this.y += this.velocity.y;
+      this.draw();
+    }
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach((particle) => {
+      particle.update();
+    });
+  }
+
+  canvas.addEventListener('mousemove', (event) => {
+    for (let i = 0; i < 5; i++) {
+      particles.push(new Particle(event.clientX, event.clientY, Math.random() * 20, colors[Math.floor(Math.random() * colors.length)]));
+    }
+  });
+
+  animate();
+</script>
+</body>
+</html>
